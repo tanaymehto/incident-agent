@@ -324,4 +324,3 @@ def get_incident(run_id: str):
     if state: return JSONResponse(build_final(state))
     return JSONResponse({"error": "not found"}, status_code=404)
 
-EOF
