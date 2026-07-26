@@ -14,7 +14,7 @@ def build_otlp(state):
     spans = []
     # 1. SERVER POST
     spans.append({
-        "traceId": trace_id, "spanId": server_span_id, "parentSpanId": "",
+        "traceId": trace_id, "spanId": server_span_id, "parentSpanId": state.get("parent_span_id", ""),
         "name": "POST /v2/incidents", "kind": 2,
         "attributes": [KV("ga5.run.id", run_id, "str"), KV("ga5.public.marker", marker, "str")]
     })

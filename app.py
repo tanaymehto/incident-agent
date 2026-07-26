@@ -16,8 +16,8 @@ def get_trace_id(req: Request):
     tp = req.headers.get("traceparent")
     if tp and len(tp) == 55 and tp.startswith("00-"):
         parts = tp.split("-")
-        return parts[1]
-    return "00000000000000000000000000000001"
+        return parts[1], parts[2]
+    return "01020304050607080910111213141516", ""
 
 def gen_span_id(action_id, attempt):
     h = hashlib.md5(f"{action_id}_{attempt}".encode()).hexdigest()
@@ -94,7 +94,7 @@ def build_initial_state(data, trace_id):
     state = {
         "runId": run_id,
         "input": data,
-        "trace_id": trace_id,
+        "trace_id": trace_id, "parent_span_id": parent_span_id,
         "diagnosis": {"rootCause": rc, "evidence": evs},
         "diags": [],
         "stage": "diagnostics",
@@ -131,7 +131,7 @@ async def start_incident(req: Request):
         return JSONResponse({"error":"unsupported profile"}, status_code=400)
         
     run_id = data.get("runId")
-    trace_id = get_trace_id(req)
+    trace_id, parent_span_id = get_trace_id(req)
     
     state = load_run(run_id)
     if not state:
