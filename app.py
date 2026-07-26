@@ -56,7 +56,7 @@ def build_initial_state(data, trace_id):
     service = inc["service"]
     
     lines = trans.split('\n')
-    active_lines = [l for l in lines if 'retain this full sentence' not in l]
+    active_lines = [l for l in lines if 'retain this full sentence' not in l and l.strip()]
     text = "\n".join(active_lines)
     evs = [re.search(r'\[(ev_[a-zA-Z0-9]+)\]', l).group(1) for l in active_lines]
     
