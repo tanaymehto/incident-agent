@@ -36,6 +36,13 @@ def save_run(run_id, data):
     with open(path, "w") as f:
         json.dump(data, f, indent=2)
 
+import traceback
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    import traceback
+    print("500 ERROR:\n", traceback.format_exc(), flush=True)
+    return JSONResponse(status_code=500, content={"error": str(exc), "trace": traceback.format_exc()})
+
 def build_initial_state(data, trace_id):
     inc = data["incident"]
     trans = inc["transcript"]
